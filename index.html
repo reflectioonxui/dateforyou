@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Для тебя — новогодний секрет</title>
+
+  <style>
+    :root{
+      --night: #0b1022;
+      --night-2:#101a36;
+      --ice: #bfe7ff;
+      --ice-soft:#e8f6ff;
+      --berry:#ff4f8a;
+      --berry-2:#ff7bb0;
+      --gold:#ffd36a;
+      --card: rgba(255,255,255,.92);
+      --dark: #1b1320;
+    }
+
+    *{ box-sizing: border-box; }
+
+    body{
+      margin:0;
+      min-height:100vh;
+      padding:18px;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--dark);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow-x:hidden;
+
+      /* Ночь + сияние */
+      background:
+        radial-gradient(1200px 800px at 20% -10%, rgba(126, 231, 255, .35), transparent 55%),
+        radial-gradient(900px 650px at 85% 0%, rgba(255, 123, 176, .22), transparent 60%),
+        radial-gradient(600px 500px at 50% 100%, rgba(255, 211, 106, .12), transparent 60%),
+        linear-gradient(180deg, var(--night), var(--night-2));
+    }
+
+    /* Звёздочки (фон) */
+    body::before{
+      content:"";
+      position: fixed;
+      inset: 0;
+      pointer-events:none;
+      z-index:0;
+      opacity:.55;
+      background:
+        radial-gradient(circle at 12% 18%, rgba(255,255,255,.75) 0 1px, transparent 2px),
+        radial-gradient(circle at 28% 35%, rgba(255,255,255,.65) 0 1px, transparent 2px),
+        radial-gradient(circle at 44% 22%, rgba(255,255,255,.55) 0 1px, transparent 2px),
+        radial-gradient(circle at 63% 30%, rgba(255,255,255,.70) 0 1px, transparent 2px),
+        radial-gradient(circle at 78% 18%, rgba(255,255,255,.60) 0 1px, transparent 2px),
+        radial-gradient(circle at 88% 42%, rgba(255,255,255,.58) 0 1px, transparent 2px),
+        radial-gradient(circle at 20% 70%, rgba(255,255,255,.58) 0 1px, transparent 2px),
+        radial-gradient(circle at 52% 78%, rgba(255,255,255,.68) 0 1px, transparent 2px),
+        radial-gradient(circle at 74% 72%, rgba(255,255,255,.52) 0 1px, transparent 2px),
+        radial-gradient(circle at 90% 80%, rgba(255,255,255,.62) 0 1px, transparent 2px);
+      filter: blur(.15px);
+    }
+
+    .wrapper{
+      width:100%;
+      max-width:520px;
+      position:relative;
+      z-index:2;
+    }
+
+    /* Снег */
+    .snow{
+      position: fixed;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+      z-index:1;
+    }
+    .snow span{
+      position:absolute;
+      top:-10vh;
+      opacity:.8;
+      will-change: transform;
+      animation: snowFall linear infinite;
+      text-shadow: 0 8px 18px rgba(0,0,0,.25);
+      user-select:none;
+    }
+    @keyframes snowFall{
+      0%   { transform: translate3d(0,-10vh,0) rotate(0deg); opacity:0; }
+      10%  { opacity:.9; }
+      100% { transform: translate3d(var(--drift, 40px), 110vh, 0) rotate(360deg); opacity:.9; }
+    }
+
+    /* Летающие сердечки (чуть-чуть — романтика) */
+    .hearts{
+      position: fixed;
+      inset:0;
+      overflow:hidden;
+      pointer-events:none;
+      z-index:1;
+      mix-blend-mode: screen;
+    }
+    .hearts span{
+      position:absolute;
+      bottom:-12vh;
+      font-size: 18px;
+      opacity:.22;
+      animation: floatUp 16s linear infinite;
+      color: rgba(255, 123, 176, .95);
+      text-shadow: 0 10px 24px rgba(0,0,0,.2);
+      user-select:none;
+    }
+    @keyframes floatUp{
+      0%   { transform: translateY(0) translateX(0); opacity:0; }
+      12%  { opacity:.25; }
+      100% { transform: translateY(-115vh) translateX(30px); opacity:0; }
+    }
+
+    /* Гирлянда */
+    .garland{
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+      height: 78px;
+      pointer-events:none;
+      z-index: 3;
+      opacity: .95;
+    }
+    .wire{
+      position:absolute;
+      left:-10px;
+      right:-10px;
+      top: 22px;
+      height: 60px;
+      border-top: 3px solid rgba(255,255,255,.22);
+      border-radius: 0 0 70% 70%;
+      filter: drop-shadow(0 8px 16px rgba(0,0,0,.28));
+    }
+    .bulbs{
+      position:absolute;
+      left:0;
+      right:0;
+      top: 10px;
+      display:flex;
+      justify-content: space-evenly;
+      gap: 8px;
+      padding: 0 10px;
+    }
+    .bulb{
+      width: 12px;
+      height: 12px;
+      border-radius: 999px;
+      background: rgba(255,211,106,.85);
+      box-shadow: 0 0 22px rgba(255, 211, 106, .55);
+      animation: twinkle 1.8s ease-in-out infinite;
+      transform: translateY(18px);
+      opacity: .9;
+    }
+    .bulb:nth-child(2n){ background: rgba(191,231,255,.9); box-shadow: 0 0 22px rgba(191,231,255,.55); animation-delay: .4s; }
+    .bulb:nth-child(3n){ background: rgba(255, 123, 176, .9); box-shadow: 0 0 22px rgba(255, 123, 176, .5); animation-delay: .8s; }
+    @keyframes twinkle{
+      0%,100%{ transform: translateY(18px) scale(1); filter: brightness(1); }
+      50%    { transform: translateY(18px) scale(1.22); filter: brightness(1.2); }
+    }
+
+    /* Карточка */
+    .card{
+      background: var(--card);
+      border-radius: 24px;
+      padding: 24px 22px 22px;
+      box-shadow: 0 22px 60px rgba(0,0,0,.32);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,.25);
+      position: relative;
+      overflow:hidden;
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background:
+        radial-gradient(280px 180px at 15% 0%, rgba(191,231,255,.55), transparent 60%),
+        radial-gradient(320px 220px at 90% 10%, rgba(255, 123, 176, .35), transparent 60%);
+      opacity: .7;
+      pointer-events:none;
+      filter: blur(0.2px);
+    }
+    .card > *{ position:relative; z-index:1; }
+
+    .center{ text-align:center; }
+
+    .title-main{
+      margin: 0 0 6px;
+      font-size: 24px;
+      font-weight: 760;
+      letter-spacing: .2px;
+    }
+    .subtitle{
+      margin:0;
+      font-size:14px;
+      opacity:.78;
+      line-height: 1.35;
+    }
+
+    .badge{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding: 6px 12px;
+      border-radius: 999px;
+      background: rgba(16, 26, 54, .08);
+      border: 1px solid rgba(16, 26, 54, .08);
+      font-size: 12px;
+      margin: 10px 0 0;
+    }
+
+    .heart-big{
+      font-size: 30px;
+      margin-bottom: 8px;
+      animation: beat 1.4s infinite;
+    }
+    @keyframes beat{
+      0%,40%,80%,100%{ transform: scale(1); }
+      20%,60%{ transform: scale(1.2); }
+    }
+
+    .input-row{ margin-top: 18px; }
+    label{
+      display:block;
+      font-size: 13px;
+      margin-bottom: 6px;
+      opacity: .85;
+    }
+    input[type="password"]{
+      width:100%;
+      padding: 11px 13px;
+      border-radius: 14px;
+      border: 1px solid rgba(0,0,0,.12);
+      font-size: 15px;
+      outline:none;
+      background: #fff;
+      transition: border-color .2s, box-shadow .2s, transform .1s;
+    }
+    input[type="password"]:focus{
+      border-color: rgba(255,79,138,.7);
+      box-shadow: 0 0 0 2px rgba(255,79,138,.18);
+      transform: translateY(-1px);
+    }
+
+    .btn{
+      margin-top: 14px;
+      width:100%;
+      border:none;
+      border-radius: 999px;
+      padding: 11px 14px;
+      background: linear-gradient(135deg, var(--berry-2), var(--berry));
+      color:#fff;
+      font-weight: 700;
+      font-size: 15px;
+      cursor:pointer;
+      box-shadow: 0 14px 32px rgba(255, 79, 138, .28);
+      transition: transform .12s ease, box-shadow .12s ease, filter .1s;
+    }
+    .btn:hover{
+      transform: translateY(-1px);
+      box-shadow: 0 18px 40px rgba(255, 79, 138, .34);
+      filter: brightness(1.02);
+    }
+    .btn:active{
+      transform: translateY(0);
+      box-shadow: 0 10px 22px rgba(255, 79, 138, .26);
+      filter: brightness(.98);
+    }
+
+    .hint{
+      margin-top: 8px;
+      font-size: 12px;
+      opacity: .75;
+      line-height: 1.35;
+    }
+    .error{
+      margin-top: 8px;
+      font-size: 12px;
+      color: #d43b57;
+      min-height: 16px;
+    }
+
+    .hidden{ display:none; }
+    .shake{ animation: shake .4s; }
+    @keyframes shake{
+      0%,100%{ transform: translateX(0); }
+      20%{ transform: translateX(-6px); }
+      40%{ transform: translateX(6px); }
+      60%{ transform: translateX(-4px); }
+      80%{ transform: translateX(4px); }
+    }
+
+    /* Экран приглашения */
+    .invite-card{ opacity:0; transform: translateY(24px) scale(.96); }
+    body.invite-visible .invite-card{
+      animation: showCard .75s cubic-bezier(.16,.82,.29,1) forwards;
+    }
+    @keyframes showCard{
+      0%{ opacity:0; transform: translateY(24px) scale(.96); }
+      100%{ opacity:1; transform: translateY(0) scale(1); }
+    }
+
+    .tag-row{ margin: 14px 0 8px; }
+    .tag{
+      display:inline-block;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(16, 26, 54, .08);
+      border: 1px solid rgba(16, 26, 54, .06);
+      margin-right: 6px;
+      margin-top: 6px;
+    }
+
+    .rows{ font-size: 14px; margin-top: 10px; }
+    .row{ margin: 7px 0; display:flex; align-items: baseline; gap: 6px; }
+    .label{ font-weight: 700; min-width: 92px; }
+
+    a{
+      color: #b43660;
+      text-decoration:none;
+      border-bottom: 1px dashed rgba(180,54,96,.55);
+    }
+    a:hover{ border-bottom-style: solid; }
+
+    .divider{
+      margin: 16px 0 14px;
+      border:none;
+      border-top: 1px dashed rgba(0,0,0,.18);
+    }
+
+    .note{
+      margin-top: 12px;
+      font-size: 13px;
+      opacity: .9;
+      line-height: 1.4;
+    }
+
+    /* Таймер */
+    .countdown{
+      margin-top: 12px;
+      padding: 12px 12px;
+      border-radius: 18px;
+      background: rgba(191,231,255,.26);
+      border: 1px solid rgba(191,231,255,.35);
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .countdown .cap{
+      font-size: 12px;
+      opacity: .8;
+      line-height: 1.2;
+    }
+    .time-grid{
+      display:flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content:flex-end;
+    }
+    .time-box{
+      min-width: 68px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: rgba(255,255,255,.85);
+      border: 1px solid rgba(0,0,0,.06);
+      text-align:center;
+    }
+    .time-box b{
+      display:block;
+      font-size: 16px;
+      line-height: 1.05;
+      letter-spacing: .3px;
+    }
+    .time-box span{
+      display:block;
+      font-size: 11px;
+      opacity: .75;
+      margin-top: 2px;
+    }
+
+    /* Письмо (typewriter) */
+    .letter{
+      margin-top: 14px;
+      padding: 14px 14px;
+      border-radius: 18px;
+      background: rgba(255, 211, 106, .14);
+      border: 1px solid rgba(255, 211, 106, .22);
+    }
+    .letter .head{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .letter .head b{
+      font-size: 13px;
+    }
+    .pill{
+      font-size: 11px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.7);
+      border: 1px solid rgba(0,0,0,.06);
+      opacity: .9;
+    }
+    .type{
+      font-size: 13px;
+      line-height: 1.45;
+      min-height: 54px;
+      white-space: pre-wrap;
+    }
+    .cursor{
+      display:inline-block;
+      width: 8px;
+      margin-left: 2px;
+      animation: blink 1.0s step-end infinite;
+      opacity:.8;
+    }
+    @keyframes blink{ 50%{ opacity: 0; } }
+
+    /* Сюрприз-подарок */
+    .gift{
+      margin-top: 14px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(255, 123, 176, .10);
+      border: 1px solid rgba(255, 123, 176, .18);
+    }
+    .gift-row{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .gift h3{
+      margin:0;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .gift p{
+      margin: 6px 0 0;
+      font-size: 12px;
+      opacity: .82;
+      line-height: 1.35;
+    }
+    .gift-btn{
+      border:none;
+      cursor:pointer;
+      border-radius: 16px;
+      padding: 10px 12px;
+      background: linear-gradient(135deg, rgba(191,231,255,.95), rgba(255, 211, 106, .95));
+      box-shadow: 0 10px 22px rgba(0,0,0,.16);
+      font-weight: 800;
+      font-size: 12px;
+      white-space: nowrap;
+      transition: transform .12s ease, filter .1s;
+    }
+    .gift-btn:hover{ transform: translateY(-1px); filter: brightness(1.02); }
+    .gift-btn:active{ transform: translateY(0); filter: brightness(.98); }
+
+    .surprise{
+      margin-top: 10px;
+      padding: 12px 12px;
+      border-radius: 16px;
+      background: rgba(255,255,255,.78);
+      border: 1px solid rgba(0,0,0,.06);
+      display:none;
+    }
+    .surprise.show{ display:block; animation: pop .35s ease-out; }
+    @keyframes pop{
+      0%{ transform: scale(.98); opacity: 0; }
+      100%{ transform: scale(1); opacity: 1; }
+    }
+    .surprise b{ display:block; margin-bottom: 4px; }
+    .surprise .tiny{ font-size: 11px; opacity: .75; margin-top: 6px; }
+
+    /* Список желаний */
+    .checklist{
+      margin-top: 12px;
+      padding: 14px 14px;
+      border-radius: 18px;
+      background: rgba(16, 26, 54, .06);
+      border: 1px solid rgba(16, 26, 54, .08);
+    }
+    .checklist h3{
+      margin:0 0 10px;
+      font-size: 14px;
+      font-weight: 800;
+    }
+    .check{
+      display:flex;
+      gap: 10px;
+      align-items:flex-start;
+      margin: 8px 0;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+    .check input{
+      margin-top: 2px;
+      width: 18px;
+      height: 18px;
+      accent-color: var(--berry);
+    }
+    .check small{ display:block; opacity: .72; margin-top: 2px; }
+
+    /* Фото в "полароиде" */
+    .photos{ margin-top: 14px; }
+    .photos h3{
+      margin: 0 0 10px;
+      font-size: 15px;
+      font-weight: 800;
+      text-align:center;
+    }
+    .photo-main{ display:flex; justify-content:center; margin: 10px 0 6px; }
+    .photo-frame-main{
+      position:relative;
+      background: #fff;
+      padding: 10px 10px 14px;
+      border-radius: 22px;
+      border: 2px solid rgba(191,231,255,.65);
+      box-shadow: 0 16px 34px rgba(0,0,0,.22);
+      width: 82%;
+      max-width: 360px;
+      opacity: 0;
+      transform: translateY(18px) scale(.94) rotate(-1.2deg);
+    }
+    .photo-frame-main img{
+      width:100%;
+      display:block;
+      border-radius: 18px;
+      max-height: 380px;
+      object-fit: cover;
+    }
+    .photo-frame-main figcaption{
+      margin-top: 8px;
+      font-size: 12px;
+      opacity:.82;
+      text-align:center;
+    }
+    .photo-frame-main::before{
+      content:"";
+      position:absolute;
+      width: 48%;
+      height: 14px;
+      background: rgba(255,255,255,.9);
+      top: -6px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-3deg);
+      border-radius: 4px;
+      box-shadow: 0 4px 10px rgba(0,0,0,.18);
+    }
+    body.invite-visible .photo-frame-main{
+      animation: mainPhotoIn .7s ease-out forwards;
+      animation-delay: .35s;
+    }
+    @keyframes mainPhotoIn{
+      0%{ opacity:0; transform: translateY(18px) scale(.94) rotate(-1.2deg); }
+      100%{ opacity:1; transform: translateY(0) scale(1) rotate(-.6deg); }
+    }
+
+    /* Музыка */
+    .music-toggle{
+      position: fixed;
+      right: 14px;
+      bottom: 14px;
+      z-index: 10;
+      border:none;
+      border-radius: 999px;
+      padding: 10px 12px;
+      font-weight: 800;
+      cursor:pointer;
+      background: rgba(255,255,255,.9);
+      border: 1px solid rgba(255,255,255,.25);
+      box-shadow: 0 14px 30px rgba(0,0,0,.25);
+      backdrop-filter: blur(10px);
+      display:flex;
+      align-items:center;
+      gap: 8px;
+      transition: transform .12s ease, filter .1s;
+    }
+    .music-toggle:hover{ transform: translateY(-1px); filter: brightness(1.02); }
+    .music-toggle:active{ transform: translateY(0); filter: brightness(.98); }
+    .music-dot{
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,79,138,.85);
+      box-shadow: 0 0 18px rgba(255,79,138,.45);
+    }
+    .music-toggle.off .music-dot{
+      background: rgba(0,0,0,.25);
+      box-shadow: none;
+    }
+    .music-toggle span{
+      font-size: 12px;
+      opacity: .9;
+      white-space: nowrap;
+    }
+
+    /* Конфетти */
+    .confetti{
+      position: fixed;
+      inset:0;
+      pointer-events:none;
+      z-index: 9;
+      overflow:hidden;
+      display:none;
+    }
+    .confetti.show{ display:block; }
+    .confetti i{
+      position:absolute;
+      top: -10vh;
+      font-style: normal;
+      opacity: .95;
+      animation: confettiFall linear forwards;
+      text-shadow: 0 10px 18px rgba(0,0,0,.22);
+      user-select:none;
+    }
+    @keyframes confettiFall{
+      0%   { transform: translateY(-10vh) rotate(0deg); }
+      100% { transform: translateY(110vh) rotate(360deg); }
+    }
+
+    /* Адаптив */
+    @media (max-width: 360px){
+      .card{ padding: 20px 16px 20px; }
+      .time-box{ min-width: 62px; }
+      .label{ min-width: 84px; }
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Музыка (положи music.mp3 рядом с файлом) -->
+  <audio id="bg-music" src="music.mp3" preload="auto" loop></audio>
+
+  <!-- Гирлянда -->
+  <div class="garland" aria-hidden="true">
+    <div class="wire"></div>
+    <div class="bulbs">
+      <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+      <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+      <div class="bulb"></div><div class="bulb"></div><div class="bulb"></div>
+    </div>
+  </div>
+
+  <!-- Снег + сердечки -->
+  <div class="snow" id="snow" aria-hidden="true"></div>
+  <div class="hearts" aria-hidden="true">
+    <span style="left:10%; animation-delay:0s; font-size:18px;">♥</span>
+    <span style="left:26%; animation-delay:3s; font-size:16px;">♥</span>
+    <span style="left:52%; animation-delay:6s; font-size:20px;">♥</span>
+    <span style="left:74%; animation-delay:1s; font-size:17px;">♥</span>
+    <span style="left:90%; animation-delay:4s; font-size:15px;">♥</span>
+  </div>
+
+  <!-- Конфетти для сюрприза -->
+  <div class="confetti" id="confetti" aria-hidden="true"></div>
+
+  <div class="wrapper">
+
+    <!-- ЭКРАН ПАРОЛЯ -->
+    <div id="password-screen" class="card">
+      <div class="center">
+        <div class="heart-big">🎄❤️</div>
+        <h1 class="title-main">Небольшой новогодний секрет</h1>
+        <p class="subtitle">Откроется только тому, кто знает одну важную дату ✨</p>
+        <div class="badge">❄️ <b>зимний режим</b> • 💌 <span>романтический</span></div>
+      </div>
+
+      <div class="input-row">
+        <label for="password-input">Пароль</label>
+        <input id="password-input" type="password" autocomplete="off" placeholder="Введите пароль" />
+        <button id="password-button" class="btn">Открыть</button>
+        <div id="password-error" class="error"></div>
+        <div class="hint">
+          Подсказка: Дата до какого числа мы должны пожениться <b>ДДММГГ</b> без точек.<br/>
+          (Например: 01012026) ✨
+        </div>
+      </div>
+    </div>
+
+    <!-- ЭКРАН ПРИГЛАШЕНИЯ -->
+    <div id="invite-screen" class="hidden">
+      <div class="card invite-card">
+        <div class="center">
+          <div class="heart-big">💌✨</div>
+          <h1 class="title-main">Новогоднее приглашение</h1>
+          <p class="subtitle">Хочу встретить этот сезон рядом с тобой — тепло, красиво и по‑настоящему.</p>
+        </div>
+
+        <div class="tag-row center">
+          <span class="tag">🎄 Уютный вечер</span>
+          <span class="tag">✨ Только мы</span>
+          <span class="tag">🥂 Тост за нас</span>
+        </div>
+
+        <!-- ДАННЫЕ (можешь поменять под себя) -->
+        <div class="rows" id="rows">
+          <div class="row"><span class="label">Дата:</span><span id="event-date-text">15.12.2025</span></div>
+          <div class="row"><span class="label">Время:</span><span id="event-time-text">21:05</span></div>
+          <div class="row"><span class="label">Место:</span><span id="event-place-text">Кинотеатр</span></div>
+          <div class="row">
+            <span class="label">Адрес:</span>
+            <span>
+              <a id="event-link" href="http://2gis.kz/almaty/firm/70000001034505578" target="_blank" rel="noreferrer">
+                открыть в 2GIS
+              </a>
+            </span>
+          </div>
+          <div class="row"><span class="label">Дресс‑код:</span><span>любой — ты всегда невероятная ✨</span></div>
+          <div class="row"><span class="label">Настроение:</span><span>тёплое, праздничное, романтичное</span></div>
+          <div class="row"><span class="label">Уровень:</span><span>влюблённость ×∞</span></div>
+        </div>
+
+        <!-- Таймер -->
+        <div class="countdown" role="status" aria-live="polite">
+          <div class="cap">
+            До нашего новогоднего момента осталось:
+          </div>
+          <div class="time-grid" id="countdown">
+            <div class="time-box"><b id="cd-d">—</b><span>дней</span></div>
+            <div class="time-box"><b id="cd-h">—</b><span>часов</span></div>
+            <div class="time-box"><b id="cd-m">—</b><span>минут</span></div>
+            <div class="time-box"><b id="cd-s">—</b><span>секунд</span></div>
+          </div>
+        </div>
+
+        <!-- Письмо -->
+        <div class="letter">
+          <div class="head">
+            <b>Письмо на снежинке</b>
+            <span class="pill"></span>
+          </div>
+          <div class="type" id="typewriter"></div>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="note">
+          Если ты видишь эту страничку — значит кто‑то уже улыбается,
+          представляя, как мы идём рядом, а вокруг гирлянды и снег ✨💗
+        </div>
+
+        <!-- Сюрприз -->
+        <div class="gift">
+          <div class="gift-row">
+            <div>
+              <h3>🎁 Новогодний сюрприз</h3>
+              <p>Нажми — и я покажу маленькое обещание на наш вечер.</p>
+            </div>
+            <button class="gift-btn" id="gift-btn" type="button">Открыть</button>
+          </div>
+          <div class="surprise" id="surprise">
+            <b id="surprise-title">…</b>
+            <div id="surprise-text">…</div>
+            <div class="tiny">Можно нажимать снова — сюрпризы меняются 😉</div>
+          </div>
+        </div>
+
+        <!-- Список желаний -->
+        <div class="checklist">
+          <h3>✨ Наш мини‑план</h3>
+          <label class="check">
+            <input type="checkbox" data-key="walk" />
+            <div>
+              Прогулка под огоньками
+              <small>10 минут или 2 часа — как захочется.</small>
+            </div>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-key="toast" />
+            <div>
+              Тост за нас
+              <small>за всё хорошее, что уже есть и что ещё будет.</small>
+            </div>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-key="hug" />
+            <div>
+              Самые тёплые объятия
+              <small>не обсуждается 💗</small>
+            </div>
+          </label>
+        </div>
+
+        <!-- Фото -->
+        <div class="photos">
+          <h3>Наш момент ❄️</h3>
+          <div class="photo-main">
+            <figure class="photo-frame-main">
+              <img src="photo1.jpg" alt="Наш момент" onerror="this.style.display='none'; this.parentElement.querySelector('.fallback').style.display='block';" />
+              <div class="fallback" style="display:none; padding: 26px 12px; text-align:center; border-radius:18px; background: rgba(191,231,255,.18); border:1px dashed rgba(0,0,0,.18);">
+                <b>photo1.jpg не найден</b><br/>
+                <span style="font-size:12px; opacity:.8;">Положи фото рядом с файлом, чтобы оно появилось здесь ✨</span>
+              </div>
+              <figcaption>И это только маленькая часть того, как красиво мы смотримся вместе.</figcaption>
+            </figure>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Кнопка музыки (работает после первого клика/ввода пароля) -->
+  <button class="music-toggle off" id="music-toggle" type="button" aria-label="Музыка">
+    <div class="music-dot" aria-hidden="true"></div>
+    <span id="music-text">музыка выкл</span>
+  </button>
+
+  <script>
+    (function () {
+      // ====== НАСТРОЙКИ (можешь поменять) ======
+      // Пароль (как и раньше): важная дата в формате ДДММГГ
+      const PASS = "31082026";
+
+      // Дата события для таймера (в формате "YYYY-MM-DDTHH:MM:SS")
+      // Пример: 2025-12-31T19:30:00
+      const EVENT_ISO = "2025-12-15T21:05:00";
+
+      // Текст письма (будет печататься)
+      const LETTER_TEXT =
+        "Этот год был сложным, но каждый день с тобой делал всё вокруг ярче. Спасибо, что была рядом, что держала мою руку и разделяла со мной все трудности. 💖\n" +
+        "Я мечтаю, что к концу лета мы станем мужем и женой, и наш дом наполнится теплом, смехом и счастьем. Я буду рядом, защищать тебя и делать всё, чтобы ты чувствовала себя самой любимой.\n\n" +
+        "Ты — моё сердце, моя радость и моё вдохновение. Пусть Новый год принесёт нам ещё больше любви, нежности и волшебных моментов вместе. 🎄✨\n" +
+        "С любовью навсегда, Теймураз  💗";
+
+      // ====== ЭЛЕМЕНТЫ ======
+      const input = document.getElementById("password-input");
+      const button = document.getElementById("password-button");
+      const error = document.getElementById("password-error");
+      const passScreen = document.getElementById("password-screen");
+      const inviteScreen = document.getElementById("invite-screen");
+      const audio = document.getElementById("bg-music");
+
+      const cdD = document.getElementById("cd-d");
+      const cdH = document.getElementById("cd-h");
+      const cdM = document.getElementById("cd-m");
+      const cdS = document.getElementById("cd-s");
+
+      const typeEl = document.getElementById("typewriter");
+      const giftBtn = document.getElementById("gift-btn");
+      const surpriseBox = document.getElementById("surprise");
+      const surpriseTitle = document.getElementById("surprise-title");
+      const surpriseText = document.getElementById("surprise-text");
+
+      const confetti = document.getElementById("confetti");
+      const musicToggle = document.getElementById("music-toggle");
+      const musicText = document.getElementById("music-text");
+
+      // ====== УТИЛИТЫ ======
+      function trimValue(raw) {
+        return String(raw || "").replace(/^\s+|\s+$/g, "");
+      }
+
+      // ====== СНЕГ (генератор) ======
+      function makeSnow() {
+        const snow = document.getElementById("snow");
+        if (!snow) return;
+
+        const flakes = 26; // можно больше/меньше
+        const chars = ["❄", "❅", "❆", "✻"];
+        for (let i = 0; i < flakes; i++) {
+          const s = document.createElement("span");
+          const size = 10 + Math.random() * 18;
+          const left = Math.random() * 100;
+          const duration = 10 + Math.random() * 10;
+          const delay = Math.random() * 8;
+          const drift = (Math.random() * 90 - 45).toFixed(0) + "px";
+          s.textContent = chars[Math.floor(Math.random() * chars.length)];
+          s.style.left = left.toFixed(2) + "%";
+          s.style.fontSize = size.toFixed(0) + "px";
+          s.style.animationDuration = duration.toFixed(2) + "s";
+          s.style.animationDelay = delay.toFixed(2) + "s";
+          s.style.setProperty("--drift", drift);
+          s.style.opacity = (0.35 + Math.random() * 0.6).toFixed(2);
+          snow.appendChild(s);
+        }
+      }
+
+      // ====== МУЗЫКА ======
+      function fadeInAudio() {
+        if (!audio) return;
+        let current = 0;
+        audio.volume = 0;
+
+        const step = 1 / 20;
+        const id = setInterval(function () {
+          current = current + step;
+          if (current >= 1) {
+            current = 1;
+            clearInterval(id);
+          }
+          audio.volume = current;
+        }, 220);
+      }
+
+      function setMusicUI(isOn) {
+        if (!musicToggle) return;
+        if (isOn) {
+          musicToggle.classList.remove("off");
+          musicText.textContent = "музыка вкл";
+        } else {
+          musicToggle.classList.add("off");
+          musicText.textContent = "музыка выкл";
+        }
+      }
+
+      function tryPlayMusic() {
+        if (!audio) return;
+        const p = audio.play();
+        if (p && p.then) {
+          p.then(function () {
+            fadeInAudio();
+            setMusicUI(true);
+          }).catch(function () {
+            // браузер мог запретить autoplay — ничего страшного
+          });
+        } else {
+          fadeInAudio();
+          setMusicUI(true);
+        }
+      }
+
+      function toggleMusic() {
+        if (!audio) return;
+        if (audio.paused) {
+          tryPlayMusic();
+        } else {
+          audio.pause();
+          setMusicUI(false);
+        }
+      }
+
+      if (musicToggle) {
+        musicToggle.addEventListener("click", toggleMusic);
+      }
+
+      // ====== ТАЙМЕР ======
+      function pad2(n) {
+        n = Math.max(0, n);
+        return (n < 10 ? "0" : "") + String(n);
+      }
+
+      function updateCountdown() {
+        const target = new Date(EVENT_ISO);
+        const now = new Date();
+        let diff = target.getTime() - now.getTime();
+
+        if (isNaN(target.getTime())) {
+          cdD.textContent = "—";
+          cdH.textContent = "—";
+          cdM.textContent = "—";
+          cdS.textContent = "—";
+          return;
+        }
+
+        if (diff <= 0) {
+          cdD.textContent = "0";
+          cdH.textContent = "00";
+          cdM.textContent = "00";
+          cdS.textContent = "00";
+          return;
+        }
+
+        const sec = Math.floor(diff / 1000);
+        const d = Math.floor(sec / (3600 * 24));
+        const h = Math.floor((sec % (3600 * 24)) / 3600);
+        const m = Math.floor((sec % 3600) / 60);
+        const s = Math.floor(sec % 60);
+
+        cdD.textContent = String(d);
+        cdH.textContent = pad2(h);
+        cdM.textContent = pad2(m);
+        cdS.textContent = pad2(s);
+      }
+
+      // ====== TYPEWRITER ======
+      function typewriter(text) {
+        if (!typeEl) return;
+        typeEl.textContent = "";
+        let i = 0;
+
+        const cursor = document.createElement("span");
+        cursor.className = "cursor";
+        cursor.textContent = "▍";
+        typeEl.appendChild(cursor);
+
+        const id = setInterval(function () {
+          const before = typeEl.textContent.replace("▍", "");
+          const nextChar = text.charAt(i);
+          typeEl.textContent = before + nextChar;
+          typeEl.appendChild(cursor);
+          i++;
+
+          if (i >= text.length) {
+            clearInterval(id);
+            // оставить курсор ещё чуть-чуть, потом убрать
+            setTimeout(function () {
+              if (cursor && cursor.parentNode) cursor.parentNode.removeChild(cursor);
+            }, 1200);
+          }
+        }, 22);
+      }
+
+      // ====== СЮРПРИЗ + КОНФЕТТИ ======
+      const SURPRISES = [
+        { title: "Горячий шоколад ☕", text: "С меня — горячий шоколад (или что ты захочешь), чтобы было совсем по‑зимнему." },
+        { title: "Прогулка под огоньками ✨", text: "Найдём самые красивые гирлянды и сделаем пару милых фото (и пару совсем несерьёзных 😄)." },
+        { title: "Тёплые руки 🤍", text: "Если вдруг будет холодно — у меня есть план: держать тебя за руку и не отпускать." },
+        { title: "Тост за нас 🥂", text: "За то, чтобы у нас было больше поводов улыбаться — вместе." },
+        { title: "Песня вечера 🎶", text: "Выбираешь ты. И она будет ассоциироваться у меня с тобой." },
+      ];
+
+      function runConfetti() {
+        if (!confetti) return;
+
+        confetti.innerHTML = "";
+        confetti.classList.add("show");
+
+        const pieces = 26;
+        const emojis = ["✨","🎉","❄️","💖","🌟"];
+        const w = window.innerWidth || 360;
+
+        for (let i = 0; i < pieces; i++) {
+          const el = document.createElement("i");
+          el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+          const left = Math.random() * w;
+          const size = 14 + Math.random() * 14;
+          const duration = 2.4 + Math.random() * 1.8;
+          const delay = Math.random() * 0.2;
+
+          el.style.left = left.toFixed(0) + "px";
+          el.style.fontSize = size.toFixed(0) + "px";
+          el.style.animationDuration = duration.toFixed(2) + "s";
+          el.style.animationDelay = delay.toFixed(2) + "s";
+
+          confetti.appendChild(el);
+        }
+
+        // убрать через ~3.5s
+        setTimeout(function () {
+          confetti.classList.remove("show");
+          confetti.innerHTML = "";
+        }, 3600);
+      }
+
+      function openGift() {
+        const item = SURPRISES[Math.floor(Math.random() * SURPRISES.length)];
+        surpriseTitle.textContent = item.title;
+        surpriseText.textContent = item.text;
+
+        surpriseBox.classList.add("show");
+        runConfetti();
+      }
+
+      if (giftBtn) {
+        giftBtn.addEventListener("click", openGift);
+      }
+
+      // ====== ЧЕКЛИСТ (localStorage) ======
+      const STORAGE_KEY = "ny_romantic_checklist_v1";
+
+      function loadChecklist() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return {};
+          return JSON.parse(raw) || {};
+        } catch (e) {
+          return {};
+        }
+      }
+
+      function saveChecklist(obj) {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(obj));
+        } catch (e) {}
+      }
+
+      function initChecklist() {
+        const saved = loadChecklist();
+        const inputs = document.querySelectorAll('.checklist input[type="checkbox"][data-key]');
+        inputs.forEach(function (cb) {
+          const k = cb.getAttribute("data-key");
+          cb.checked = !!saved[k];
+          cb.addEventListener("change", function () {
+            const now = loadChecklist();
+            now[k] = cb.checked;
+            saveChecklist(now);
+          });
+        });
+      }
+
+      // ====== РАЗБЛОКИРОВКА ======
+      function unlock() {
+        const value = trimValue(input.value);
+
+        if (value === PASS) {
+          error.textContent = "";
+          passScreen.classList.add("hidden");
+          inviteScreen.classList.remove("hidden");
+          document.body.classList.add("invite-visible");
+          window.scrollTo({ top: 0, behavior: "smooth" });
+
+          // после успешного клика пароль уже считается "user gesture" — можно пробовать играть музыку
+          tryPlayMusic();
+
+          // запускаем письмо + таймер + чеклист
+          typewriter(LETTER_TEXT);
+          updateCountdown();
+          setInterval(updateCountdown, 1000);
+
+          initChecklist();
+        } else {
+          error.textContent = "Почти, но нет! попробуй ещё раз 💕";
+          passScreen.classList.add("shake");
+          setTimeout(function () {
+            passScreen.classList.remove("shake");
+          }, 450);
+        }
+      }
+
+      // ====== СТАРТ ======
+      makeSnow();
+      setMusicUI(false);
+
+      button.addEventListener("click", unlock);
+      input.addEventListener("keydown", function (e) {
+        if (e.key === "Enter") unlock();
+      });
+
+    })();
+  </script>
+</body>
+</html>
